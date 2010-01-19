@@ -19,7 +19,10 @@ $table = str_replace(
 	array("", ""),
 	basename($_SERVER["SCRIPT_NAME"]) );
 
+print "<html><head><title>DB Management</title></head>";
+print "<body>";
 print "<h1>Database Management</h1>";
 print "<h2>" . ucfirst($table) . "</h2>";
 $editor = new DbEditor( new Db( $table ) );
+print "</body></html>";
 
