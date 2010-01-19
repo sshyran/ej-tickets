@@ -155,15 +155,39 @@ class DbEditor
 
 		print "<table>";
 
+        $sqlFields = "";
+        $sqlJoins = "";
+
 		print "<tr>";
 		foreach( $schema["fields"] as $field )
 		{
-			$field = $this->beautifyField( $field );
-			print "<th>$field</th>";
+			$printable = $this->beautifyField( $field );
+			print "<th>$printable</th>";
+
+            # Also build the SQL
+            if( $sqlFields ) $sqlFields .= ", ";
+            if( $sqlJoins ) $sqlJoins .= " ";
+            if( ! array_key_exists( $field, $schema["foreignKeys"] ) )
+            {
+                $sqlFields .= $field;
+            }
+            else
+            {
+                $foreign = $schema["foreignKeys"][$field];
+                $sqlJoins .= sprintf( "LEFT JOIN %s ON %s.%s = %s.%s",
+                    $foreign["referenced_table_name"],
+                    $foreign["table_name"], $foreign["column_name"],
+                    $foreign["referenced_table_name"], $foreign["referenced_column_name"] );
+                $sqlFields .= sprintf( "%s.label AS %s",
+                    $foreign["referenced_table_name"], $field );
+            }
 		}
 		print "</tr>";
 
-		foreach( $db->rows("SELECT * FROM " . $dbObject->getTable() . ";") as $row)
+        $sql = sprintf( "SELECT %s FROM %s %s",
+            $sqlFields, $dbObject->getTable(), $sqlJoins );
+        
+		foreach( $db->rows( $sql ) as $row )
 		{
 			$editLink = sprintf('<a href="%s?operation=edit&key=%s">edit</a>',
 				$this->postURL,

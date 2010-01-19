@@ -46,6 +46,8 @@ return (current($this->a) !== FALSE);
 	{
 		if( $this->schema == null )
 		{
+            global $CONFIG;
+
 			$schema = array();
 			$schema["fields"]  = array();
 
@@ -63,6 +65,19 @@ return (current($this->a) !== FALSE);
 					array_push( $schema["primaryKey"], $row["Field"] );
 				}
 			}
+
+            $sql = sprintf( "SELECT 
+                    table_name, column_name, referenced_table_name, referenced_column_name
+                    FROM information_schema.KEY_COLUMN_USAGE
+                    WHERE REFERENCED_TABLE_SCHEMA = '%s'
+                    AND TABLE_NAME = '%s';",
+                $CONFIG->getDbDatabase(),
+                $this->getTable() );
+            $schema["foreignKeys"] = array();
+            foreach( $db->rows( $sql ) as $row )
+            {
+                $schema["foreignKeys"][$row["column_name"]] = $row;
+            }
 
 			$this->schema = $schema;
 		}
