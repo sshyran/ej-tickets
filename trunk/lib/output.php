@@ -28,15 +28,33 @@ function shutdown_output()
     $regex_head = '/<head[^>]*>(.*?)<\/head>/is';
     $regex_body = '/<body[^>]*>(.*?)<\/body>/is';
 
+    $error = 2;
+
     $matches = array();
     preg_match( $regex_body, $str, $matches );
-    $SMARTY->assign( 'body', $matches[1] );
+    if( sizeof( $matches ) > 1 )
+    {
+        $SMARTY->assign( 'body', $matches[1] );
+        $error--;
+    }
     
     $matches = array();
     preg_match( $regex_head, $str, $matches );
-    $SMARTY->assign( 'head', $matches[1] );
+    if( sizeof( $matches ) > 1 )
+    {
+        $SMARTY->assign( 'head', $matches[1] );
+        $error--;
+    }
 
-    print $SMARTY->fetch( $TEMPLATE );
+    if( ! $error )
+    {
+        print $SMARTY->fetch( $TEMPLATE );
+    }
+    else
+    {
+        print "Unable to find head or body tags in:<hr/>";
+        print "<pre>"; print str_replace( "<", "&lt;", print_r($str, true) );
+    }
 }
 
 ob_start();
