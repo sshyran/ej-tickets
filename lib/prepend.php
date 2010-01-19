@@ -225,3 +225,5 @@ $CONFIG = new Config();
 
 require_once("lib/DatabaseSchema.php");
 require_once("lib/orm/includer.php");
+require_once("lib/output.php");
+
