@@ -52,8 +52,10 @@ function shutdown_output()
     }
     else
     {
+        print $str;
+        print "<hr/>";
         print "Unable to find head or body tags in:<hr/>";
-        print "<pre>"; print str_replace( "<", "&lt;", print_r($str, true) );
+        print "<pre>"; print str_replace( "<", "&lt;", print_r($str, true) ); print "</pre>";
     }
 }
 
