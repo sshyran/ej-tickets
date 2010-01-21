@@ -107,4 +107,14 @@ return (current($this->a) !== FALSE);
 			$database->update( $table, $row );
 		}
 	}
+	
+    public function insert( $array )
+	{
+		$database = $this->getDatabase();
+		$table = $this->getTable();
+		foreach( $array as $encoded => $row )
+		{
+			$database->insert( $table, $row );
+		}
+	}
 }
