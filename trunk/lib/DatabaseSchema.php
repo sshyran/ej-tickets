@@ -42,6 +42,7 @@ function action_db_schema() { # don't clutter the namespace
 		label TINYTEXT DEFAULT '',
 		PRIMARY KEY(status_id)
 		);",
+
 	"users" => 
 		"CREATE TABLE users (
 		user_id INT NOT NULL AUTO_INCREMENT,
@@ -49,20 +50,25 @@ function action_db_schema() { # don't clutter the namespace
 		login TINYTEXT DEFAULT '',
 		password TINYTEXT DEFAULT '',
 		PRIMARY KEY(user_id)
-		);",
+		) ENGINE=INNODB;",
 	"roles" => 
 		"CREATE TABLE roles (
 		role_id INT NOT NULL AUTO_INCREMENT,
 		label TINYTEXT DEFAULT '',
 		PRIMARY KEY(role_id)
-		);",
+		) ENGINE=INNODB;",
 	"user_roles" => 
 		"CREATE TABLE user_roles (
 		user_role_id INT NOT NULL AUTO_INCREMENT,
 		user_id INT NOT NULL,
 		role_id INT NOT NULL,
-		PRIMARY KEY(user_role_id)
-		);",
+		PRIMARY KEY(user_role_id),
+        INDEX( user_id ),
+        INDEX( role_id ),
+        FOREIGN KEY (user_id) REFERENCES users(user_id),
+        FOREIGN KEY (role_id) REFERENCES roles(role_id)
+		) ENGINE=INNODB;",
+
 	"assignments" =>
 		"CREATE TABLE assignments (
 		assignment_id INT NOT NULL AUTO_INCREMENT,
