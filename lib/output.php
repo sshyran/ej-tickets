@@ -9,12 +9,12 @@ require_once( $smartypath );
 $SMARTY = new Smarty();
 
 // Override this variable switch templates!
-$TEMPLATE = "default.tpl";
+$_TEMPLATE = "default.tpl";
 
 function shutdown_output()
 {
     global $SMARTY;
-    global $TEMPLATE;
+    global $_TEMPLATE;
 
     $smartydir = dirname( dirname( __FILE__ ) ) . "/smarty";
 
@@ -48,7 +48,7 @@ function shutdown_output()
 
     if( ! $error )
     {
-        print $SMARTY->fetch( $TEMPLATE );
+        print $SMARTY->fetch( $_TEMPLATE );
     }
     else
     {

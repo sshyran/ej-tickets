@@ -1,7 +1,11 @@
 <?php
 
 error_reporting(E_ALL);
-define("CONFIG_DIR", "config");
+define("ROOT_DIR", dirname( dirname( __FILE__ ) ) );
+define("CONFIG_DIR", ROOT_DIR . "/config" );
+define("LIB_DIR", ROOT_DIR . "/lib" );
+set_include_path( get_include_path() 
+	. ":" . ROOT_DIR );
 session_start();
 
 class Config {
