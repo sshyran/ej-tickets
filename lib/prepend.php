@@ -181,8 +181,10 @@ class Database {
 		$retval = array();
 		$result = mysql_query($sql);
 		if (mysql_errno()) {
+			print "<pre>";
 			debug_print_backtrace();
-			trigger_error(mysql_error(), E_USER_ERROR);
+			print "</pre>";
+			trigger_error(mysql_error() . " ($sql)", E_USER_ERROR);
 		}
 		while ($row = mysql_fetch_assoc($result)) {
 			array_push($retval, $row);

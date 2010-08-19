@@ -128,7 +128,7 @@ class Blobber implements ArrayAccess {
 
 class PageContent
 {
-    public static function get( $str )
+    public static function get( $str, $default=null )
     {
         $db = new Database();
 
@@ -137,19 +137,26 @@ class PageContent
 
         if( ! $content )
         {
-            $content = "<b><font color='red'><small>No content block for '$str' exists yet!</small></font></b>";
+	    if( $default )
+            {
+	        $content = $default;
+	    }
+	    else
+	    {
+                $content = "<b><font color='red'><small>No content block for '$str' exists yet!</small></font></b>";
+	    }
         }
 
         return $content;
     }
 
-    public static function display( $str )
+    public static function display( $str, $default=null )
     {
         $editLink = sprintf( '<a class="pageContentEditLink" href="../lib/PageContentEditor.php?label=%s">edit</a>',
             urlencode( $str ) );
         print $editLink;
 
-        $out = self::get( $str );
+        $out = self::get( $str, $default );
         //if( strpos( $out, "{" ) !== FALSE )
         //{
             //global $SMARTY;

@@ -1,5 +1,5 @@
 <?php
-require_once("lib/prepend.php");
+require_once("../lib/prepend.php");
 
 $db = new Database();
 
@@ -11,7 +11,7 @@ if( isset( $_REQUEST["ticket"] ) )
 
 if( sizeof( $ticket ) > 2 )
 {
-	if( strlen( "project-new" ) )
+	if( strlen( $ticket["project-new"] ) )
 	{
 		// If a new project is specified, create it, and insert into data array
 		$sql = "SELECT project_id FROM projects WHERE user_id = %client_id% AND label = %project-new%";
@@ -22,11 +22,12 @@ if( sizeof( $ticket ) > 2 )
 				"user_id" => $ticket["client_id"],
 				"label" => $ticket["project-new"] ) );
 		}
-		$ticket["project"] = $db->value( $sql, $ticket );
+		$ticket["project_id"] = $db->value( $sql, $ticket );
 	}
 
 	$data = array();
-	foreach (array("client_id", "project", "status", "assigned") as $key) {
+    print "<pre>"; print_r($ticket);
+	foreach (array("client_id", "project_id", "status_id", "assigned_id") as $key) {
 		$data[$key] = $ticket[$key];
 	}
 	foreach ($_REQUEST["descriptions"] as $description) {
@@ -79,17 +80,17 @@ else
 	print "</td></tr>";
 	
 	print "<tr><th align='right'>Project</th><td>";
-	print "<select name='ticket[project]'>";
+	print "<select name='ticket[project_id]'>";
 	print "<option value=''></option>";
-	foreach ($db->rows("SELECT DISTINCT project FROM ticket WHERE client_id = %client_id%", $ticket) as $row) {
-		print "<option value='$row[project]'>$row[project]</option>";
+	foreach ($db->rows("SELECT project_id, label FROM projects WHERE user_id = %client_id%", $ticket) as $row) {
+		print "<option value='$row[project_id]'>$row[label]</option>";
 	}
 	print "</select>";
 	print "<input name='ticket[project-new]'/>";
 	print "</td></tr>";
 	
 	print "<tr><th align='right'>Status</th><td>";
-	print "<select name='ticket[status]'>";
+	print "<select name='ticket[status_id]'>";
 	print "<option value='1'>Open</option>";
 	#print "<input name='status' value='Open' type='hidden'/>";
 	#print "<option value=''></option>";
@@ -100,7 +101,7 @@ else
 	print "</td></tr>";
 	
 	print "<tr><th align='right'>Assigned</th><td>";
-	print "<select name='ticket[assigned]'>";
+	print "<select name='ticket[assigned_id]'>";
 	print "<option value=''></option>";
 	$client_role = $db->value("SELECT * FROM roles WHERE label = 'Programmer'");
 	#print "<input name='status' value='Open' type='hidden'/>";

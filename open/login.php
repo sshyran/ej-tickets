@@ -12,14 +12,14 @@ if( ! array_key_exists("login", $_REQUEST) )
     ?>
     <form action="<?php print $_SERVER["SCRIPT_NAME"]; ?>" method="post">
         <table cellspacing="10"><tr><td colspan="2">
-            <table cellspacing="0" cellpadding="0" border="0"><tr><td><img style="padding: 0em 0.65em 0em 0.5em" src="../images/sprite-man.gif" border="0"/></td>
-            <td><b>Member Login</b></td></tr></table>
+            <table cellspacing="0" cellpadding="0" border="0"><tr><td><!-- img style="padding: 0em 0.65em 0em 0.5em" src="../images/sprite-man.gif" border="0"/ --></td>
+            <td><b>Ticketing Login</b></td></tr></table>
         </td></tr><tr><td>
         <input style="padding: 3px; width: 210px" name="login" title="Login" value="Enter Your Name" onFocus="if(this.value='Enter Your Name')this.value='';"/>
         </td></tr><tr><td>
         <input style="padding: 3px; width: 210px" name="password" type="password" title="Password"/>
         </td><td>
-        <input type="image" src="../images/button-login.gif" value="Login"/>
+        <input type="submit" name="submit" value="Login"/>
         </td></tr><tr><td>
             <table cellspacing="0" cellpadding="0" border="0"><tr><td><input name="rememberMyPassword" type="checkbox" id="rememberMyPassword"/></td>
             <td><label for="rememberMyPassword">&nbsp;Remember My Password</label></td></tr></table>
@@ -36,7 +36,7 @@ else
     $user_id = $db->value("SELECT user_id FROM users WHERE login = %login% AND password = %password%", $_REQUEST );
     if( ! $user_id )
     {
-        PageContent::display( "login-invalid" );
+        PageContent::display( "login-invalid", "<p>Sorry, invalid login.  Please try again.</p>" );
     }
     else
     {
