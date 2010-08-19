@@ -1,6 +1,12 @@
 <?php
 
 error_reporting(E_ALL);
+
+if( get_magic_quotes_gpc() )
+{
+    trigger_error( "magic_quotes and magic_quotes_gpc must be disabled", E_USER_ERROR );
+}
+
 define("ROOT_DIR", dirname( dirname( __FILE__ ) ) );
 define("CONFIG_DIR", ROOT_DIR . "/config" );
 define("LIB_DIR", ROOT_DIR . "/lib" );
@@ -53,6 +59,24 @@ class Config {
 		return "";
 	}
 
+    public function getExportCmd() 
+    { 
+        // ok so this function is not safe ... :(
+        return sprintf("mysqldump -h%s -u%s -p%s %s",
+            $this->get( "DB_HOST" ),
+            $this->get( "DB_LOGIN" ),
+            $this->get( "DB_PASSWORD" ),
+            $this->get( "DB_DATABASE" ) );
+    }
+    public function getImportCmd() 
+    { 
+        // ok so this function is not safe ... :(
+        return sprintf("mysql -h%s -u%s -p%s -D%s -e ",
+            $this->get( "DB_HOST" ),
+            $this->get( "DB_LOGIN" ),
+            $this->get( "DB_PASSWORD" ),
+            $this->get( "DB_DATABASE" ) );
+    }
 	public function getDbDatabase() { return $this->get( "DB_DATABASE" ); }
 }
 
@@ -227,7 +251,35 @@ class Database {
 
 $CONFIG = new Config();
 
+$DATABASESCHEMA = array();
+
+require_once("lib/PageContent.php");
+require_once("admin/includer.php");
 require_once("lib/DatabaseSchema.php");
 require_once("lib/orm/includer.php");
 require_once("lib/output.php");
+
+require_once("admin/outcluder.php");
+
+function getPreference( $label, $default = null )
+{
+    $db = new Database;
+    $sql = "SELECT preference_value FROM site_preferences WHERE preference_name = '" . $db->q($label) . "'";
+    $value = $db->value( $sql, array( "label" => $label ) );
+    if( $value === null )
+    {
+        $value = $default;
+    }
+    return $value;
+}
+function setPreference( $name, $value )
+{
+    $db = new Database;
+    $name = $db->q($name);
+    $value = $db->q($value);
+    $sql = "DELETE FROM site_preferences WHERE preference_name = '$name'";
+    $db->query( $sql );
+    $sql = "INSERT INTO site_preferences (preference_name, preference_value) VALUES ('$name', '$value');";
+    $db->query( $sql );
+}
 

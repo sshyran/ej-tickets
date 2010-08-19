@@ -10,7 +10,7 @@ require_once("lib/prepend.php");
 <h1>Ticketing</h1>
 
 <ul>
-	<li><a href="login.php">Login</a></li>
+	<li><a href="open/login.php">Login</a></li>
 </ul>
 
 </body>

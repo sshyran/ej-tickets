@@ -89,7 +89,9 @@ class DbEditor
 	private function getPrimaryKeyValueEncoded( $row )
 	{
 		$dbObject = $this->dbObject;
+        return $dbObject->getPrimaryKeyValueEncoded( $row );
 
+        /*
 		$schema = $dbObject->getSchema();
 		$retval = array();
 		foreach( $schema["primaryKey"] as $key )
@@ -101,6 +103,7 @@ class DbEditor
 		$retval = base64_encode($retval);
 		$retval = str_replace("=", "", $retval);
 		return $retval;
+        */
 	}
 
 	private function getPrimaryKeyValueEncodedAsWhereClause( $encoded )
@@ -228,7 +231,7 @@ class DbEditor
 
 	private function beautifyField( $field )
 	{
-		$words = split( "_", $field);
+		$words = explode( "_", $field);
 		$words = array_map("ucfirst", $words);
 		$field = join(" ", $words);
 		return $field;
