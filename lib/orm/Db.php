@@ -117,4 +117,19 @@ return (current($this->a) !== FALSE);
 			$database->insert( $table, $row );
 		}
 	}
+    
+    public function getPrimaryKeyValueEncoded( $row )
+	{
+		$schema = $this->getSchema();
+		$retval = array();
+		foreach( $schema["primaryKey"] as $key )
+		{
+			array_push($retval, $row[$key]);
+			#$retval[$key] = $row[$key];
+		}
+		$retval = json_encode($retval);
+		$retval = base64_encode($retval);
+		$retval = str_replace("=", "", $retval);
+		return $retval;
+	}
 }

@@ -7,6 +7,11 @@ require_once( $smartypath );
 
 // Going to do this here so we have a global smarty variable in case we need it somewhere
 $SMARTY = new Smarty();
+$smartydir = dirname( dirname( __FILE__ ) ) . "/smarty";
+$SMARTY->template_dir = $smartydir;
+$SMARTY->compile_dir = $smartydir.'/templates_c';
+$SMARTY->cache_dir = $smartydir.'/cache';
+$SMARTY->config_dir = $smartydir.'/configs';
 
 // Override this variable switch templates!
 $_TEMPLATE = "default.tpl";
@@ -15,13 +20,6 @@ function shutdown_output()
 {
     global $SMARTY;
     global $_TEMPLATE;
-
-    $smartydir = dirname( dirname( __FILE__ ) ) . "/smarty";
-
-    $SMARTY->template_dir = $smartydir;
-    $SMARTY->compile_dir = $smartydir.'/templates_c';
-    $SMARTY->cache_dir = $smartydir.'/cache';
-    $SMARTY->config_dir = $smartydir.'/configs';
 
     $str = ob_get_clean();
 
@@ -45,6 +43,8 @@ function shutdown_output()
         $SMARTY->assign( 'head', $matches[1] );
         $error--;
     }
+
+    $SMARTY->assign( 'blob', new Blobber );
 
     if( ! $error )
     {
