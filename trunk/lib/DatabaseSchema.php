@@ -26,24 +26,30 @@ function action_db_schema() { # don't clutter the namespace
 		note TEXT NULL,
 		PRIMARY KEY(ticket_log_id)
 		);",
-	"ticket" => 
-		"CREATE TABLE ticket (
-		ticket_id INT NOT NULL AUTO_INCREMENT,
-		client_id INT NOT NULL,
-		project_id TINYTEXT DEFAULT '',
-		status_id INT NOT NULL,
-		assigned_id INT NOT NULL,
-		description TEXT DEFAULT '',
-		time_estimated DECIMAL(5,2),
-		time_actual DECIMAL(5,2),
-		PRIMARY KEY(ticket_id)
-		);",
+
 	"status" => 
 		"CREATE TABLE status (
 		status_id INT NOT NULL AUTO_INCREMENT,
 		label TINYTEXT DEFAULT '',
 		PRIMARY KEY(status_id)
-		);",
+		) ENGINE=INNODB;",
+
+	"ticket" => 
+		"CREATE TABLE ticket (
+		ticket_id INT NOT NULL AUTO_INCREMENT,
+		client_id INT NOT NULL,
+		project_id INT NOT NULL,
+		status_id INT NOT NULL,
+		assigned_id INT NOT NULL,
+		description TEXT DEFAULT '',
+		time_estimated DECIMAL(5,2),
+		time_actual DECIMAL(5,2),
+		PRIMARY KEY(ticket_id),
+        FOREIGN KEY (client_id) REFERENCES users(user_id),
+        FOREIGN KEY (assigned_id) REFERENCES users(user_id),
+        FOREIGN KEY (status_id) REFERENCES status(status_id),
+        FOREIGN KEY (project_id) REFERENCES projects(project_id)
+		) ENGINE=INNODB;",
 
 	"users" => 
 		"CREATE TABLE users (
@@ -82,8 +88,9 @@ function action_db_schema() { # don't clutter the namespace
 		project_id INT NOT NULL AUTO_INCREMENT,
 		user_id INT NOT NULL,
 		label TINYTEXT DEFAULT '',
-		PRIMARY KEY(project_id)
-		);",
+		PRIMARY KEY(project_id),
+		FOREIGN KEY (user_id) REFERENCES users(user_id)
+		) ENGINE=INNODB;",
 		
 	);
 

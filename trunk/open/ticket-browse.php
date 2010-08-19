@@ -1,5 +1,5 @@
 <?php
-require_once("lib/prepend.php");
+require_once("../lib/prepend.php");
 
 $db = new Database();
 

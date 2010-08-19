@@ -237,7 +237,7 @@ class DbEditor
 		return $field;
 	}
 
-    public function buildJoins( &$schema )
+    public function buildJoins( &$schema, $table=null )
     {
         // Returns array( "field1, field2", "LEFT JOIN z ON x.a = z.a LEFT JOIN ...." )
         $sqlFields = "";
@@ -249,7 +249,14 @@ class DbEditor
             if( $sqlJoins ) $sqlJoins .= " ";
             if( ! array_key_exists( $field, $schema["foreignKeys"] ) )
             {
-                $sqlFields .= $field;
+                if( $table )
+                {
+                    $sqlFields .= sprintf( "`%s`.`%s`", $table, $field );
+                }
+                else
+                {
+                    $sqlFields .= "`$field`";
+                }
             }
             else
             {
@@ -291,7 +298,7 @@ class DbEditor
 		}
 		print "</tr>";
         
-        list( $sqlFields, $sqlJoins ) = $this->buildJoins( $schema );
+        list( $sqlFields, $sqlJoins ) = $this->buildJoins( $schema, $dbObject->getTable() );
 
         $sql = sprintf( "SELECT %s FROM %s %s",
             $sqlFields, $dbObject->getTable(), $sqlJoins );
